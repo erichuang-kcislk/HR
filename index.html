@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>林口康橋薪資比較模擬計算器（116年度最新公教調薪基準）</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for 25-Year Trajectory Visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', '"Microsoft JhengHei"', '"PingFang TC"', 'sans-serif'],
+          },
+          colors: {
+            royal: {
+              50: '#FAF5FC',
+              100: '#F4ECF7',
+              200: '#E8DAEF',
+              300: '#D2B4DE',
+              500: '#8E44AD',
+              600: '#6C3483',
+              700: '#5B2C6F',
+              800: '#4A235A',
+              900: '#351742',
+            },
+            tiffany: {
+              50: '#F0FDFA',
+              100: '#E0F7F6',
+              200: '#B2EBE8',
+              400: '#26D0CE',
+              500: '#0ABAB5',
+              600: '#00A39E',
+              700: '#00837E',
+              800: '#006662',
+              900: '#004D4A',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+      background-color: #F8FAFC;
+      color: #1E293B;
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Custom Range Slider Styling (Royal Purple Theme) */
+    input[type="range"].royal-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+      height: 28px;
+      touch-action: manipulation;
+    }
+    input[type="range"].royal-slider::-webkit-slider-runnable-track {
+      height: 8px;
+      border-radius: 999px;
+      background: #E8DAEF;
+    }
+    input[type="range"].royal-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      margin-top: -7px;
+      background-color: #6C3483;
+      height: 22px;
+      width: 22px;
+      border-radius: 50%;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 2px 6px rgba(91, 44, 111, 0.35);
+      transition: transform 0.15s ease;
+    }
+    input[type="range"].royal-slider::-webkit-slider-thumb:hover,
+    input[type="range"].royal-slider::-webkit-slider-thumb:active {
+      transform: scale(1.15);
+    }
+
+    /* Custom Scrollbar for Wide Tables */
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F1F5F9;
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased pb-16">
+
+  <!-- Top Privacy & Security Notice Bar -->
+  <div class="bg-slate-900 text-slate-100 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-center leading-snug">
+      <svg class="w-4 h-4 text-tiffany-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+      </svg>
+      <span>本模擬器的所有計算都在使用者的瀏覽器端即時運算，不會收集、也不會儲存任何使用者的輸入紀錄。</span>
+    </div>
+  </div>
+
+  <!-- Top Header Banner -->
+  <header class="bg-gradient-to-r from-royal-800 via-royal-700 to-tiffany-700 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm text-[11px] sm:text-xs font-semibold tracking-wide mb-2">
+            <span class="w-2 h-2 rounded-full bg-tiffany-400 animate-pulse"></span>
+            116 年度軍公教調薪基準（+2,000 再 +4%）同步內建
+          </div>
+          <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight leading-tight">
+            林口康橋薪資比較模擬計算器
+          </h1>
+          <p class="text-royal-100 text-xs sm:text-sm mt-1.5 leading-relaxed font-medium">
+            製作單位：林口康橋人資組｜計算基準：116 年度公教待遇標準及本校薪資管理辦法
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2.5 text-xs">
+          <div class="bg-royal-900/60 border border-royal-300/30 rounded-xl px-3.5 py-2 flex-1 sm:flex-none">
+            <span class="text-royal-200 block text-[11px]">統一比較前提</span>
+            <span class="font-bold text-white">25 年間未留停・每年穩定晉 1 級</span>
+          </div>
+          <button type="button" onclick="resetDefaults()" class="min-h-[44px] bg-white/15 hover:bg-white/25 active:scale-95 transition text-white font-semibold px-4 py-2.5 rounded-xl border border-white/25 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            重設條件
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 -mt-4 space-y-5 sm:space-y-6">
+
+    <!-- =====================================================================
+         SECTION 1: USER-FRIENDLY SHARED CONTROL PANEL (共用篩選條件區)
+    ====================================================================== -->
+    <section class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-4 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-5 border-b border-slate-100">
+        <div class="flex items-start sm:items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-royal-100 text-royal-700 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-800">設定比較條件</h2>
+            <p class="text-xs text-slate-500 mt-0.5">請依序選擇您的「資歷與超鐘點」、「職務」與「考績規劃」，下方試算結果將即時自動更新</p>
+          </div>
+        </div>
+        <!-- Live Salary Grade & Point Status Badge -->
+        <div id="gradeStatusBadge" class="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-royal-50 to-tiffany-50 border border-royal-200 text-xs sm:text-sm font-bold text-royal-800 self-start sm:self-auto">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- 3-Group Logical Cards Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+
+        <!-- CARD A: 個人資歷與任教學制 + 超鐘點設定 -->
+        <div class="bg-slate-50/80 rounded-2xl p-4 sm:p-5 border border-slate-200/80 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center gap-2 pb-2.5 mb-3.5 border-b border-slate-200/70">
+              <span class="w-2.5 h-2.5 rounded-full bg-royal-600"></span>
+              <h3 class="text-sm font-extrabold text-slate-800">基本資歷與任教學制</h3>
+              <span class="text-[11px] text-slate-400 ml-auto">決定本俸與超鐘點</span>
+            </div>
+
+            <!-- 1. 最高學歷 -->
+            <div class="mb-4">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                最高學歷 <span class="font-normal text-slate-500">（決定起敘與封頂薪點）</span>
+              </label>
+              <div class="grid grid-cols-2 gap-2" id="degreeSelector">
+                <button type="button" data-value="bachelor" onclick="setState('degree', 'bachelor')" class="degree-btn min-h-[48px] py-2 px-3 rounded-xl text-sm font-bold border transition text-center cursor-pointer">
+                  學士學歷
+                  <span class="block text-[11px] font-normal opacity-85 mt-0.5">190 起 ～ 625 封頂</span>
+                </button>
+                <button type="button" data-value="master" onclick="setState('degree', 'master')" class="degree-btn min-h-[48px] py-2 px-3 rounded-xl text-sm font-bold border transition text-center cursor-pointer">
+                  碩士以上
+                  <span class="block text-[11px] font-normal opacity-85 mt-0.5">245 起 ～ 650 封頂</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. 任職年資 -->
+            <div class="mb-4 bg-white rounded-xl p-3 border border-slate-200/80">
+              <div class="flex items-center justify-between mb-1">
+                <label for="serviceYearInput" class="text-xs font-bold text-slate-700">
+                  採計任職年資
+                </label>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs text-slate-500">第</span>
+                  <input type="number" id="serviceYearInput" min="1" max="25" value="1" oninput="handleYearInput(this.value)" class="w-16 min-h-[36px] text-center font-bold text-royal-700 bg-royal-50/60 border border-royal-300 rounded-lg py-1 text-base focus:outline-none focus:ring-2 focus:ring-royal-500" />
+                  <span class="text-xs text-slate-500">年</span>
+                </div>
+              </div>
+              <input type="range" id="serviceYearSlider" min="1" max="25" value="1" oninput="setState('serviceYear', parseInt(this.value, 10))" class="w-full royal-slider my-1" />
+              <div class="flex justify-between text-[11px] text-slate-400 font-medium">
+                <span>第1年 (初任)</span>
+                <span>第10年</span>
+                <span>第20年</span>
+                <span>第25年</span>
+              </div>
+            </div>
+
+            <!-- 3. 任教學制（按鈕有作用，點擊切換連動主管加給與超鐘點） -->
+            <div class="mb-4">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                任教學制 <span class="font-normal text-slate-500">（點選切換學制與鐘點標準）</span>
+              </label>
+              <div class="grid grid-cols-3 gap-2" id="schoolLevelSelector">
+                <button type="button" data-value="high" onclick="setSchoolLevel('high')" class="level-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  高中
+                  <span class="block text-[10px] font-normal opacity-85 mt-0.5">公校鐘點505</span>
+                </button>
+                <button type="button" data-value="junior" onclick="setSchoolLevel('junior')" class="level-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  國中
+                  <span class="block text-[10px] font-normal opacity-85 mt-0.5">公校鐘點$455</span>
+                </button>
+                <button type="button" data-value="elementary" onclick="setSchoolLevel('elementary')" class="level-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  國小
+                  <span class="block text-[10px] font-normal opacity-85 mt-0.5">公校鐘點$405</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 4. 每週超鐘點節數（緊接於任教學制下方） -->
+            <div class="pt-3 border-t border-slate-200/70">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <label for="overtimeSelect" class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <span>每週超鐘點節數</span>
+                  <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">不計入獎金基數</span>
+                </label>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="adjustOvertimePeriods(-1)" aria-label="減少1節" class="w-8 h-8 rounded-lg bg-white border border-royal-200 text-royal-700 font-bold hover:bg-royal-50 active:scale-95 transition flex items-center justify-center cursor-pointer">－</button>
+                  <select id="overtimeSelect" onchange="setState('overtimePeriods', parseInt(this.value, 10))" class="min-h-[36px] bg-white border border-royal-300 rounded-lg px-2.5 py-1 text-xs sm:text-sm font-bold text-royal-800 focus:outline-none focus:ring-2 focus:ring-royal-500 cursor-pointer">
+                    <!-- Populated dynamically: 0, 1~9 (elementary) or 0, 1~20 (junior/high) -->
+                  </select>
+                  <button type="button" onclick="adjustOvertimePeriods(1)" aria-label="增加1節" class="w-8 h-8 rounded-lg bg-white border border-royal-200 text-royal-700 font-bold hover:bg-royal-50 active:scale-95 transition flex items-center justify-center cursor-pointer">＋</button>
+                </div>
+              </div>
+              <div class="bg-white rounded-xl p-2.5 border border-slate-200/90 space-y-1">
+                <div id="overtimeRateDesc" class="text-xs font-bold text-royal-800 leading-snug">
+                  <!-- Populated dynamically: 僅顯示本校超鐘點基準 -->
+                </div>
+                <div id="overtimeSummaryPreview" class="text-[11px] text-slate-600 font-medium">
+                  <!-- Populated dynamically: 月均超鐘點(每週節數*超鐘點費*40週/12個月) -->
+                </div>
+                <p class="text-[11px] text-slate-500 font-medium pt-1 border-t border-slate-100">
+                  ※ 全年授課週數依學校行事曆計算。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD B: 職務身份與每月津貼 -->
+        <div class="bg-slate-50/80 rounded-2xl p-4 sm:p-5 border border-slate-200/80 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center gap-2 pb-2.5 mb-3.5 border-b border-slate-200/70">
+              <span class="w-2.5 h-2.5 rounded-full bg-royal-600"></span>
+              <h3 class="text-sm font-extrabold text-slate-800">職務身份與每月津貼</h3>
+              <span class="text-[11px] text-slate-400 ml-auto">計入獎金基數</span>
+            </div>
+
+            <!-- 5. 職務身份 -->
+            <div class="mb-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                擔任職務 <span class="font-normal text-slate-500">（請點選欲試算之職務）</span>
+              </label>
+              <div class="grid grid-cols-3 sm:grid-cols-3 gap-2" id="roleSelector">
+                <button type="button" data-value="teacher" onclick="setState('role', 'teacher')" class="role-btn min-h-[44px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border transition cursor-pointer">
+                  專任教師
+                </button>
+                <button type="button" data-value="homeroom" onclick="setState('role', 'homeroom')" class="role-btn min-h-[44px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border transition cursor-pointer">
+                  班導師
+                </button>
+                <button type="button" data-value="deputyChief" onclick="setState('role', 'deputyChief')" class="role-btn min-h-[44px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border transition cursor-pointer">
+                  副組長
+                </button>
+                <button type="button" data-value="chief" onclick="setState('role', 'chief')" class="role-btn min-h-[44px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border transition cursor-pointer">
+                  組長
+                </button>
+                <button type="button" data-value="director" onclick="setState('role', 'director')" class="role-btn min-h-[44px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border transition col-span-2 sm:col-span-2 cursor-pointer">
+                  正副主任
+                </button>
+              </div>
+
+              <!-- Conditional Sub-control A: Homeroom Extra Chair -->
+              <div id="homeroomSubControl" class="hidden mt-3 bg-royal-50/90 border border-royal-200 p-3 rounded-xl space-y-1.5">
+                <label class="flex items-start gap-2.5 cursor-pointer select-none min-h-[36px]">
+                  <input type="checkbox" id="gradeChairCheckbox" onchange="setState('hasGradeChair', this.checked)" class="w-5 h-5 mt-0.5 rounded text-royal-600 focus:ring-royal-500 border-royal-300 shrink-0" />
+                  <span class="text-xs sm:text-sm font-bold text-royal-900 leading-snug">
+                    兼任「學年主任」或「領域召集人」
+                    <span class="block text-[11px] font-semibold text-royal-700 mt-0.5">
+                      擇一發放，本校每月加給 +$3,000（計入獎金基數）
+                    </span>
+                  </span>
+                </label>
+              </div>
+
+              <!-- Conditional Sub-control B: Private Admin Allowance Range Slider -->
+              <div id="adminSubControl" class="hidden mt-3 bg-royal-50/90 border border-royal-200 p-3 rounded-xl space-y-2">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span id="adminRangeLabel" class="text-xs font-bold text-royal-900">
+                    本校主管加給（參考本校管理辦法）
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <span class="text-xs text-royal-700 font-bold">$</span>
+                    <input type="number" id="privateAdminInput" step="500" oninput="handleAdminInput(this.value)" class="w-24 min-h-[36px] text-right font-bold text-royal-800 bg-white border border-royal-300 rounded-lg px-2 py-1 text-base focus:outline-none focus:ring-2 focus:ring-royal-500" />
+                    <span class="text-xs text-royal-700 font-semibold">/月</span>
+                  </div>
+                </div>
+                <input type="range" id="privateAdminSlider" step="500" oninput="setState('privateAdminAllowance', parseInt(this.value, 10))" class="w-full royal-slider" />
+                <div class="flex justify-between text-[11px] text-royal-700 font-medium">
+                  <span id="adminMinText">最低 $12,000</span>
+                  <span id="adminMidText">預設中位數 $15,500</span>
+                  <span id="adminMaxText">最高 $19,000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. 調整津貼與專業津貼（選填輸入框） -->
+            <div class="pt-2.5 border-t border-slate-200/70">
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-bold text-slate-700">
+                  特定津貼選填 <span class="font-normal text-slate-500">（無領取請維持 0）</span>
+                </label>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div class="bg-white rounded-xl p-2.5 border border-slate-200">
+                  <label for="adjustmentInput" class="block text-[11px] font-bold text-slate-600 mb-1">調整津貼 ($/月)</label>
+                  <input type="number" id="adjustmentInput" min="0" step="100" value="0" placeholder="0" oninput="handleCustomAllowance('adjustmentAllowance', this.value)" class="w-full min-h-[38px] text-right font-bold text-royal-700 bg-royal-50/50 border border-royal-200 rounded-lg px-2.5 py-1 text-base focus:outline-none focus:ring-2 focus:ring-royal-500" />
+                </div>
+                <div class="bg-white rounded-xl p-2.5 border border-slate-200">
+                  <label for="professionalInput" class="block text-[11px] font-bold text-slate-600 mb-1">專業津貼 ($/月)</label>
+                  <input type="number" id="professionalInput" min="0" step="100" value="0" placeholder="0" oninput="handleCustomAllowance('professionalAllowance', this.value)" class="w-full min-h-[38px] text-right font-bold text-royal-700 bg-royal-50/50 border border-royal-200 rounded-lg px-2.5 py-1 text-base focus:outline-none focus:ring-2 focus:ring-royal-500" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD C: 年度考績與退撫投資組合 -->
+        <div class="bg-slate-50/80 rounded-2xl p-4 sm:p-5 border border-slate-200/80 md:col-span-2 lg:col-span-1 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center gap-2 pb-2.5 mb-3.5 border-b border-slate-200/70">
+              <span class="w-2.5 h-2.5 rounded-full bg-tiffany-600"></span>
+              <h3 class="text-sm font-extrabold text-slate-800">年度考績與退撫投資</h3>
+              <span class="text-[11px] text-slate-400 ml-auto">決定獎金與退休金</span>
+            </div>
+
+            <!-- 7. 年度考核等第 -->
+            <div class="mb-4">
+              <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                <label class="text-xs font-bold text-slate-700">
+                  預期年度考核等第
+                </label>
+                <span id="publicGradeHint" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-tiffany-100 text-tiffany-800">
+                  公校對應：四條一款（甲等）
+                </span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2" id="appraisalSelector">
+                <button type="button" data-value="excellent" onclick="setState('appraisal', 'excellent')" class="appraisal-btn min-h-[48px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  特優
+                  <span class="block text-[11px] font-normal opacity-85">考核獎金 2 個月</span>
+                </button>
+                <button type="button" data-value="good" onclick="setState('appraisal', 'good')" class="appraisal-btn min-h-[48px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  優
+                  <span class="block text-[11px] font-normal opacity-85">考核獎金 1.5 個月</span>
+                </button>
+                <button type="button" data-value="fair" onclick="setState('appraisal', 'fair')" class="appraisal-btn min-h-[48px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  佳
+                  <span class="block text-[11px] font-normal opacity-85">考核獎金 1 個月</span>
+                </button>
+                <button type="button" data-value="acceptable" onclick="setState('appraisal', 'acceptable')" class="appraisal-btn min-h-[48px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  尚可
+                  <span class="block text-[11px] font-normal opacity-85">考核獎金 0.5 個月</span>
+                </button>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1.5">
+                ※ 系統自動將「特優／優」對應公校甲等、「佳」對應乙等、「尚可」對應丙等。
+              </p>
+            </div>
+
+            <!-- 8. 退休專戶投資組合報酬率 -->
+            <div class="pt-2 border-t border-slate-200/70">
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-bold text-slate-700">
+                  退撫新制投資組合 <span class="font-normal text-slate-500">（25年模擬用）</span>
+                </label>
+              </div>
+              <div class="grid grid-cols-3 gap-2" id="portfolioSelector">
+                <button type="button" data-value="conservative" onclick="setState('portfolio', 'conservative')" class="portfolio-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  保守型
+                  <span class="block text-[11px] font-normal opacity-85">年化 2.0%</span>
+                </button>
+                <button type="button" data-value="balanced" onclick="setState('portfolio', 'balanced')" class="portfolio-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  穩健型
+                  <span class="block text-[11px] font-normal opacity-85">年化 4.5%</span>
+                </button>
+                <button type="button" data-value="aggressive" onclick="setState('portfolio', 'aggressive')" class="portfolio-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border transition text-center cursor-pointer">
+                  積極型
+                  <span class="block text-[11px] font-normal opacity-85">年化 6.5%</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 2: 3-TAB NAVIGATION BAR
+    ====================================================================== -->
+    <nav class="bg-royal-50/90 rounded-2xl shadow-sm border border-royal-200/80 p-1.5 grid grid-cols-1 sm:grid-cols-3 gap-1.5" role="tablist">
+      <button type="button" id="tabBtn-overview" onclick="switchTab('overview')" class="tab-btn min-h-[48px] py-3 px-4 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span>單年薪資總覽與公私校比較</span>
+      </button>
+      <button type="button" id="tabBtn-career" onclick="switchTab('career')" class="tab-btn min-h-[48px] py-3 px-4 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        <span>職涯 25 年累積與退休金模擬</span>
+      </button>
+      <button type="button" id="tabBtn-matrix" onclick="switchTab('matrix')" class="tab-btn min-h-[48px] py-3 px-4 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        <span>職務與績效情境試算矩陣</span>
+      </button>
+    </nav>
+
+    <!-- =====================================================================
+         VIEW 1: 單年薪資總覽與公私校比較
+    ====================================================================== -->
+    <div id="tabContent-overview" class="space-y-5 sm:space-y-6">
+
+      <!-- 3 Hero KPI Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5" id="overviewKpiCards">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Smart Insight Box -->
+      <div id="smartInsightBox" class="bg-gradient-to-r from-royal-50 via-white to-tiffany-50 rounded-2xl border border-royal-200/80 p-4 sm:p-5 shadow-sm">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Side-by-Side Detailed Comparison Table -->
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 overflow-hidden">
+        <div class="px-4 sm:px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-800">逐項薪資、獎金與保險扣繳明細並排比較表</h3>
+            <p class="text-xs text-slate-500 mt-0.5">所有金額均為新台幣（元），手機可左右滑動檢視完整欄位</p>
+          </div>
+          <div class="flex items-center gap-3 text-xs font-bold">
+            <span class="inline-flex items-center gap-1.5 text-royal-700"><span class="w-3 h-3 rounded-sm bg-royal-600"></span>林口康橋（私校）</span>
+            <span class="inline-flex items-center gap-1.5 text-tiffany-700"><span class="w-3 h-3 rounded-sm bg-tiffany-500"></span>公立學校（116基準）</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-xs sm:text-sm text-left border-collapse min-w-[600px]">
+            <thead>
+              <tr class="border-b border-slate-200">
+                <th class="py-3.5 px-3 sm:px-6 bg-slate-50 text-slate-700 font-bold sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.06)] w-2/5">薪資／獎金／保險與退撫項目</th>
+                <th class="py-3.5 px-3 sm:px-6 bg-royal-700 text-white font-bold text-right">林口康橋（私校）</th>
+                <th class="py-3.5 px-3 sm:px-6 bg-tiffany-600 text-white font-bold text-right">公立學校（116年）</th>
+                <th class="py-3.5 px-3 sm:px-6 bg-slate-100 text-slate-800 font-bold text-right">差額（私 － 公）</th>
+              </tr>
+            </thead>
+            <tbody id="overviewTableBody" class="divide-y divide-slate-100">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         VIEW 2: 職涯 25 年累積與退休金模擬
+    ====================================================================== -->
+    <div id="tabContent-career" class="hidden space-y-5 sm:space-y-6">
+
+      <!-- 3 Summary Cards at End of Year 25 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5" id="careerKpiCards">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- 25-Year Trajectory Chart -->
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-800">25 年職涯累積總資產與退撫專戶成長曲線</h3>
+            <p id="careerChartSubtitle" class="text-xs text-slate-500 mt-0.5">
+              <!-- Populated by JS -->
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3 text-xs font-semibold">
+            <span class="inline-flex items-center gap-1.5 text-royal-700">
+              <span class="w-4 h-1 bg-royal-600 rounded"></span>林口康橋總資產
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-tiffany-700">
+              <span class="w-4 h-1 bg-tiffany-500 rounded"></span>公校總資產
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-royal-500">
+              <span class="w-4 h-0.5 border-b-2 border-dashed border-royal-500"></span>林口康橋退撫專戶
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-tiffany-600">
+              <span class="w-4 h-0.5 border-b-2 border-dashed border-tiffany-600"></span>公校退撫專戶
+            </span>
+          </div>
+        </div>
+        <div class="relative h-72 sm:h-96 w-full">
+          <canvas id="careerChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Two-Tier Retirement Breakdown Card -->
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-4 sm:p-6 space-y-6" id="pensionBreakdownCard">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Year-by-Year 25-Year Schedule Table -->
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 overflow-hidden">
+        <div class="px-4 sm:px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-800">第 1 年 ～ 第 25 年逐年實領薪資與退撫專戶明細表</h3>
+            <p class="text-xs text-slate-500 mt-0.5">呈現每年晉級、績優津貼階梯變化（第21年起停發）、超鐘點收入及退撫個人專戶複利滾存餘額</p>
+          </div>
+        </div>
+        <div class="overflow-x-auto max-h-[480px] custom-scrollbar">
+          <table class="w-full text-xs sm:text-sm text-right border-collapse min-w-[680px]">
+            <thead class="sticky top-0 z-20 shadow-sm">
+              <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                <th class="py-3 px-3 text-center font-bold bg-slate-100 sticky left-0 z-20">年資</th>
+                <th class="py-3 px-3 text-center font-bold bg-slate-100">薪級/薪點</th>
+                <th class="py-3 px-3 font-bold bg-royal-700 text-white">林口康橋實領年薪</th>
+                <th class="py-3 px-3 font-bold bg-tiffany-600 text-white">公校實領年薪</th>
+                <th class="py-3 px-3 font-bold bg-royal-50 text-royal-800">林口康橋退撫餘額</th>
+                <th class="py-3 px-3 font-bold bg-tiffany-50 text-tiffany-800">公校退撫餘額</th>
+                <th class="py-3 px-3 font-bold bg-slate-100 text-slate-800">累積總資產差額</th>
+              </tr>
+            </thead>
+            <tbody id="careerScheduleBody" class="divide-y divide-slate-100">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         VIEW 3: 職務與績效情境試算矩陣
+    ====================================================================== -->
+    <div id="tabContent-matrix" class="hidden space-y-5 sm:space-y-6">
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 overflow-hidden">
+        <div class="px-4 sm:px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-800">五種職務身份橫向情境試算矩陣</h3>
+            <p id="matrixSubtitle" class="text-xs text-slate-500 mt-0.5">
+              <!-- Populated by JS -->
+            </p>
+          </div>
+          <span class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-royal-50 text-royal-800 border border-royal-200 self-start sm:self-auto">
+            行政主管加給依目前設定之數值／中位數試算
+          </span>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-xs sm:text-sm border-collapse min-w-[820px]">
+            <thead>
+              <tr class="border-b border-slate-200">
+                <th class="py-4 px-3 sm:px-4 bg-slate-50 text-left font-bold text-slate-700 sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.06)] min-w-[175px]">比較指標項目</th>
+                <th class="py-4 px-3 sm:px-4 bg-slate-50 text-right font-bold text-slate-800 min-w-[140px]">1. 專任教師</th>
+                <th class="py-4 px-3 sm:px-4 bg-royal-50/70 text-right font-bold text-royal-900 min-w-[155px]">
+                  2. 班導師
+                  <span id="matrixChairTag" class="block text-[10px] font-normal text-royal-600"></span>
+                </th>
+                <th class="py-4 px-3 sm:px-4 bg-slate-50 text-right font-bold text-slate-800 min-w-[145px]">
+                  3. 副組長
+                  <span class="block text-[10px] font-normal text-slate-500">公校無編制對照專任</span>
+                </th>
+                <th class="py-4 px-3 sm:px-4 bg-slate-50 text-right font-bold text-slate-800 min-w-[140px]">4. 行政組長</th>
+                <th class="py-4 px-3 sm:px-4 bg-slate-50 text-right font-bold text-slate-800 min-w-[140px]">5. 正副主任</th>
+              </tr>
+            </thead>
+            <tbody id="matrixTableBody" class="divide-y divide-slate-100">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Disclaimer & Regulatory Attribution -->
+    <footer class="mt-8 pt-6 border-t border-slate-200/80 text-center space-y-2 px-2">
+      <div class="text-xs text-slate-400 space-y-1 leading-relaxed max-w-4xl mx-auto">
+        <p>註：本模擬器公校基準依據行政院核定之「116 年度軍公教員工待遇調整方案」、公教人員保險法（費率 16.33% × 個人負擔 35%）及教育部導師費／行政工作獎金／兼代課鐘點費規定建置；林口康橋數據依據本校薪資與考核管理辦法精算。</p>
+        <p>超鐘點費計入月薪與年薪，但不計入年終及考核獎金計算基數；全年授課週數依學校行事曆計算。所有試算數據僅供招募與內部薪資規劃參考，實際核薪仍依人事室正式敘薪核定為準。</p>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- =======================================================================
+       JAVASCRIPT CALCULATION ENGINE & UI CONTROLLER
+  ======================================================================== -->
+  <script>
+    /**
+     * 1. EXACT 29-GRADE SALARY & ALLOWANCE SCHEDULE (116-YEAR +4% ADJUSTED)
+     */
+    const SALARY_TABLE = [
+      { grade: 29, point: 190, basePay: 26050, academic: 26080, otherAllowance: 1089 },
+      { grade: 28, point: 200, basePay: 26850, academic: 26080, otherAllowance: 1122 },
+      { grade: 27, point: 210, basePay: 27640, academic: 26080, otherAllowance: 1155 },
+      { grade: 26, point: 220, basePay: 28440, academic: 26080, otherAllowance: 1189 },
+      { grade: 25, point: 230, basePay: 29240, academic: 26080, otherAllowance: 1222 },
+      { grade: 24, point: 245, basePay: 30440, academic: 29700, otherAllowance: 1272 },
+      { grade: 23, point: 260, basePay: 31630, academic: 29700, otherAllowance: 2644 },
+      { grade: 22, point: 275, basePay: 32820, academic: 29700, otherAllowance: 2744 },
+      { grade: 21, point: 290, basePay: 34020, academic: 29700, otherAllowance: 2844 },
+      { grade: 20, point: 310, basePay: 35210, academic: 29700, otherAllowance: 2944 },
+      { grade: 19, point: 330, basePay: 36410, academic: 29700, otherAllowance: 3043 },
+      { grade: 18, point: 350, basePay: 37610, academic: 33430, otherAllowance: 3143 },
+      { grade: 17, point: 370, basePay: 38800, academic: 33430, otherAllowance: 3243 },
+      { grade: 16, point: 390, basePay: 39990, academic: 33430, otherAllowance: 3343 },
+      { grade: 15, point: 410, basePay: 41190, academic: 33430, otherAllowance: 3443 },
+      { grade: 14, point: 430, basePay: 42380, academic: 33430, otherAllowance: 3543 },
+      { grade: 13, point: 450, basePay: 43580, academic: 33430, otherAllowance: 3643 },
+      { grade: 12, point: 475, basePay: 46770, academic: 39290, otherAllowance: 391 },
+      { grade: 11, point: 500, basePay: 48360, academic: 39290, otherAllowance: 404 },
+      { grade: 10, point: 525, basePay: 49950, academic: 39290, otherAllowance: 418 },
+      { grade: 9,  point: 550, basePay: 51540, academic: 39290, otherAllowance: 431 },
+      { grade: 8,  point: 575, basePay: 53130, academic: 39290, otherAllowance: 444 },
+      { grade: 7,  point: 600, basePay: 54730, academic: 39290, otherAllowance: 458 },
+      { grade: 6,  point: 625, basePay: 56330, academic: 39290, otherAllowance: 471 },
+      { grade: 5,  point: 650, basePay: 57920, academic: 39290, otherAllowance: 484 },
+      { grade: 4,  point: 680, basePay: 59510, academic: 39290, otherAllowance: 497 },
+      { grade: 3,  point: 710, basePay: 61100, academic: 39290, otherAllowance: 517 },
+      { grade: 2,  point: 740, basePay: 62690, academic: 39290, otherAllowance: 524 },
+      { grade: 1,  point: 770, basePay: 64280, academic: 39290, otherAllowance: 531 }
+    ];
+
+    // Private Admin Allowance Ranges (參考本校管理辦法)
+    const PRIVATE_ADMIN_RANGES = {
+      deputyChief: { label: '副組長', min: 6000, max: 11000, defaultMid: 8500 },
+      chief:       { label: '組長',   min: 12000, max: 19000, defaultMid: 15500 },
+      director:    { label: '正副主任', min: 18000, max: 33000, defaultMid: 25500 }
+    };
+
+    // Public School Admin Supervisory Allowance (116-year adjusted, <= 70 classes) + Admin Work Bonus
+    const PUBLIC_ADMIN_STANDARDS = {
+      high: {
+        teacher:     { supervisory: 0,     workBonus: 0,    homeroom: 0 },
+        homeroom:    { supervisory: 0,     workBonus: 0,    homeroom: 4000 },
+        deputyChief: { supervisory: 0,     workBonus: 0,    homeroom: 0 },
+        chief:       { supervisory: 7350,  workBonus: 1500, homeroom: 0 },
+        director:    { supervisory: 10150, workBonus: 2000, homeroom: 0 }
+      },
+      junior: {
+        teacher:     { supervisory: 0,     workBonus: 0,    homeroom: 0 },
+        homeroom:    { supervisory: 0,     workBonus: 0,    homeroom: 4000 },
+        deputyChief: { supervisory: 0,     workBonus: 0,    homeroom: 0 },
+        chief:       { supervisory: 6720,  workBonus: 1500, homeroom: 0 },
+        director:    { supervisory: 8950,  workBonus: 2000, homeroom: 0 }
+      },
+      elementary: {
+        teacher:     { supervisory: 0,     workBonus: 0,    homeroom: 0 },
+        homeroom:    { supervisory: 0,     workBonus: 0,    homeroom: 4000 },
+        deputyChief: { supervisory: 0,     workBonus: 0,    homeroom: 0 },
+        chief:       { supervisory: 6720,  workBonus: 1500, homeroom: 0 },
+        director:    { supervisory: 8450,  workBonus: 2000, homeroom: 0 }
+      }
+    };
+
+    // Overtime Hourly/Period Rates & Max Weekly Periods by School Level
+    const OVERTIME_STANDARDS = {
+      elementary: {
+        levelName: '國小',
+        privateDesc: '國小超鐘點：每節 40 分鐘，$480/節',
+        privateRate: 480,
+        publicRate: 405,
+        maxPeriods: 9
+      },
+      junior: {
+        levelName: '國中',
+        privateDesc: '國中超鐘點：每節45分鐘，$540/節',
+        privateRate: 540,
+        publicRate: 455,
+        maxPeriods: 20
+      },
+      high: {
+        levelName: '高中',
+        privateDesc: '高中超鐘點：每節45分鐘，$540/節',
+        privateRate: 540,
+        publicRate: 505,
+        maxPeriods: 20
+      }
+    };
+
+    // Annual teaching weeks used to compute monthly average overtime pay
+    const ANNUAL_TEACHING_WEEKS = 40;
+
+    // Portfolio Annual Return Rates
+    const PORTFOLIO_RATES = {
+      conservative: { label: '保守型', rate: 0.02 },
+      balanced:     { label: '穩健型', rate: 0.045 },
+      aggressive:   { label: '積極型', rate: 0.065 }
+    };
+
+    // Public Service Insurance (公保) Statutory Parameters: 本俸 * 16.33% * 35%
+    const GESSI_TOTAL_RATE   = 0.1633; // 16.33% total rate
+    const GESSI_EMP_SHARE    = 0.35;   // 35% employee share
+    const GESSI_ANNUITY_RATE = 0.013;  // 1.3% per year of service
+
+    // Application State
+    let state = {
+      activeTab: 'overview',
+      degree: 'master',          // 'bachelor' | 'master'
+      serviceYear: 1,            // 1 to 25
+      schoolLevel: 'high',       // 'high' | 'junior' | 'elementary'
+      overtimePeriods: 0,        // 0 to 9 (elementary) or 0 to 20 (junior/high)
+      role: 'homeroom',          // 'teacher' | 'homeroom' | 'deputyChief' | 'chief' | 'director'
+      hasGradeChair: false,      // Only applicable when role === 'homeroom'
+      adminAllowances: {
+        deputyChief: 8500,
+        chief: 15500,
+        director: 25500
+      },
+      appraisal: 'excellent',    // 'excellent' | 'good' | 'fair' | 'acceptable'
+      adjustmentAllowance: 0,
+      professionalAllowance: 0,
+      portfolio: 'balanced'      // 'conservative' | 'balanced' | 'aggressive'
+    };
+
+    let careerChartInstance = null;
+
+    function fmt(num) {
+      const rounded = Math.round(num);
+      return '$' + rounded.toLocaleString('zh-TW');
+    }
+
+    function fmtDiff(diff) {
+      const rounded = Math.round(diff);
+      if (rounded > 0) return `+$${rounded.toLocaleString('zh-TW')}`;
+      if (rounded < 0) return `-$${Math.abs(rounded).toLocaleString('zh-TW')}`;
+      return '$0';
+    }
+
+    function getSalaryRow(degree, serviceYear) {
+      const startIndex = degree === 'bachelor' ? 0 : 5;
+      const capIndex   = degree === 'bachelor' ? 23 : 24;
+      const targetIndex = Math.min(startIndex + (serviceYear - 1), capIndex);
+      return {
+        ...SALARY_TABLE[targetIndex],
+        isSeniorCap: targetIndex === capIndex
+      };
+    }
+
+    function getMeritAllowance(serviceYear, appraisal) {
+      if (serviceYear <= 1 || serviceYear >= 21) return 0;
+      if (serviceYear >= 2 && serviceYear <= 5) {
+        if (appraisal === 'excellent') return 3000;
+        if (appraisal === 'good') return 2000;
+        if (appraisal === 'fair') return 1000;
+        return 0;
+      }
+      if (serviceYear >= 6 && serviceYear <= 7) {
+        if (appraisal === 'excellent') return 3000;
+        if (appraisal === 'good') return 2000;
+        return 0;
+      }
+      if (serviceYear >= 8 && serviceYear <= 10) {
+        if (appraisal === 'excellent') return 4000;
+        if (appraisal === 'good') return 3000;
+        return 0;
+      }
+      if (serviceYear >= 11 && serviceYear <= 16) {
+        if (appraisal === 'excellent') return 6000;
+        if (appraisal === 'good') return 5000;
+        return 0;
+      }
+      if (serviceYear >= 17 && serviceYear <= 20) {
+        if (appraisal === 'excellent') return 4000;
+        if (appraisal === 'good') return 3000;
+        return 0;
+      }
+      return 0;
+    }
+
+    function calculateSingleYear(params) {
+      const {
+        degree,
+        serviceYear,
+        schoolLevel,
+        overtimePeriods,
+        role,
+        hasGradeChair,
+        adminAllowanceValue,
+        appraisal,
+        adjustmentAllowance,
+        professionalAllowance
+      } = params;
+
+      const row = getSalaryRow(degree, serviceYear);
+      const otConfig = OVERTIME_STANDARDS[schoolLevel];
+      const safePeriods = Math.max(0, Math.min(overtimePeriods || 0, otConfig.maxPeriods));
+
+      // Monthly GESSI (公保) Employee Self-Contribution: 本俸 * 16.33% * 35%
+      const empGessiFee = Math.round(row.basePay * GESSI_TOTAL_RATE * GESSI_EMP_SHARE);
+
+      // Overtime Pay Calculation: 月均超鐘點 = Math.round(每週節數 * 超鐘點費 * 40 / 12)
+      // Rule 1: Overtime is included in Monthly & Annual Pay, EXCLUDED from Bonus Base!
+      const privMonthlyOvertime = Math.round((safePeriods * otConfig.privateRate * ANNUAL_TEACHING_WEEKS) / 12);
+      const pubMonthlyOvertime  = Math.round((safePeriods * otConfig.publicRate * ANNUAL_TEACHING_WEEKS) / 12);
+      const privAnnualOvertime  = privMonthlyOvertime * 12;
+      const pubAnnualOvertime   = pubMonthlyOvertime * 12;
+
+      // --- PRIVATE SCHOOL CALCULATION (林口康橋) ---
+      const privHomeroom = role === 'homeroom' ? 13000 : 0;
+      const privGradeChair = (role === 'homeroom' && hasGradeChair) ? 3000 : 0;
+      const privAdmin = ['deputyChief', 'chief', 'director'].includes(role) ? adminAllowanceValue : 0;
+      const privOther = row.otherAllowance;
+      const privMerit = getMeritAllowance(serviceYear, appraisal);
+      const privAdj = adjustmentAllowance || 0;
+      const privProf = professionalAllowance || 0;
+
+      // Monthly Gross INCLUDES Monthly Average Overtime
+      const privMonthlyGross = row.basePay + row.academic + privHomeroom + privGradeChair + privAdmin + privOther + privMerit + privAdj + privProf + privMonthlyOvertime;
+
+      // Private Bonus Base (All monthly allowances EXCEPT Merit Allowance and Overtime Pay)
+      const privBonusBase = row.basePay + row.academic + privHomeroom + privGradeChair + privAdmin + privOther + privAdj + privProf;
+
+      const privYearEndBonus = Math.round(privBonusBase * 2.0);
+      const privAppraisalMonths = { excellent: 2.0, good: 1.5, fair: 1.0, acceptable: 0.5 }[appraisal];
+      const privAppraisalBonus = Math.round(privBonusBase * privAppraisalMonths);
+      const privFestivalGifts = 12000;
+
+      // Private Retirement (12% of BasePay*2: 35% employee, 32.5% school, 32.5% gov)
+      const pensionBase = row.basePay * 2;
+      const privEmpPension = Math.round(pensionBase * 0.12 * 0.35);
+      const privSchoolPension = Math.round(pensionBase * 0.12 * 0.325);
+      const privGovPension = Math.round(pensionBase * 0.12 * 0.325);
+      const privEmployerPensionTotal = privSchoolPension + privGovPension;
+      const privMonthlyPensionTotal = privEmpPension + privEmployerPensionTotal;
+
+      // Monthly Net Cash after deducting BOTH Retirement Self-Contribution AND GESSI Self-Contribution
+      const privMonthlyNet = privMonthlyGross - privEmpPension - empGessiFee;
+      const privAnnualCashGross = (privMonthlyGross * 12) + privYearEndBonus + privAppraisalBonus + privFestivalGifts;
+      const privAnnualCashNet = (privMonthlyNet * 12) + privYearEndBonus + privAppraisalBonus + privFestivalGifts;
+      const privTotalPackage = privAnnualCashGross + (privEmployerPensionTotal * 12);
+
+      // --- PUBLIC SCHOOL CALCULATION (116-YEAR BENCHMARK) ---
+      const pubRoleConfig = PUBLIC_ADMIN_STANDARDS[schoolLevel][role];
+      const pubHomeroom = pubRoleConfig.homeroom;
+      const pubSupervisory = pubRoleConfig.supervisory;
+      const pubWorkBonus = pubRoleConfig.workBonus;
+
+      // Monthly Gross INCLUDES Monthly Average Overtime
+      const pubMonthlyGross = row.basePay + row.academic + pubHomeroom + pubSupervisory + pubWorkBonus + pubMonthlyOvertime;
+
+      // Public Bonus Base: BasePay + Academic + Supervisory Allowance ONLY (Excludes Overtime)
+      const pubBonusBase = row.basePay + row.academic + pubSupervisory;
+      const pubYearEndBonus = Math.round(pubBonusBase * 1.5);
+
+      let pubAppraisalMonths = 0;
+      let pubGradeLabel = '';
+      if (appraisal === 'excellent' || appraisal === 'good') {
+        pubAppraisalMonths = row.isSeniorCap ? 2.0 : 1.0;
+        pubGradeLabel = row.isSeniorCap ? '四條一款 (甲等・封頂2個月)' : '四條一款 (甲等・1個月)';
+      } else if (appraisal === 'fair') {
+        pubAppraisalMonths = row.isSeniorCap ? 1.5 : 0.5;
+        pubGradeLabel = row.isSeniorCap ? '四條二款 (乙等・封頂1.5個月)' : '四條二款 (乙等・0.5個月)';
+      } else {
+        pubAppraisalMonths = 0;
+        pubGradeLabel = '四條三款 (丙等・0個月)';
+      }
+      const pubAppraisalBonus = Math.round(pubBonusBase * pubAppraisalMonths);
+
+      // Public Retirement (112/7/1 New System 15% of BasePay*2: 35% employee, 65% gov)
+      const pubEmpPension = Math.round(pensionBase * 0.15 * 0.35);
+      const pubGovPension = Math.round(pensionBase * 0.15 * 0.65);
+      const pubMonthlyPensionTotal = pubEmpPension + pubGovPension;
+
+      const pubMonthlyNet = pubMonthlyGross - pubEmpPension - empGessiFee;
+      const pubAnnualCashGross = (pubMonthlyGross * 12) + pubYearEndBonus + pubAppraisalBonus;
+      const pubAnnualCashNet = (pubMonthlyNet * 12) + pubYearEndBonus + pubAppraisalBonus;
+      const pubTotalPackage = pubAnnualCashGross + (pubGovPension * 12);
+
+      return {
+        row,
+        empGessiFee,
+        overtime: {
+          periods: safePeriods,
+          privateDesc: otConfig.privateDesc,
+          privateRate: otConfig.privateRate,
+          publicRate: otConfig.publicRate,
+          privMonthly: privMonthlyOvertime,
+          pubMonthly: pubMonthlyOvertime,
+          privAnnual: privAnnualOvertime,
+          pubAnnual: pubAnnualOvertime
+        },
+        private: {
+          basePay: row.basePay,
+          academic: row.academic,
+          homeroom: privHomeroom,
+          gradeChair: privGradeChair,
+          admin: privAdmin,
+          other: privOther,
+          merit: privMerit,
+          adjustment: privAdj,
+          professional: privProf,
+          overtimeMonthly: privMonthlyOvertime,
+          overtimeAnnual: privAnnualOvertime,
+          monthlyGross: privMonthlyGross,
+          empPension: privEmpPension,
+          empGessi: empGessiFee,
+          schoolPension: privSchoolPension,
+          govPension: privGovPension,
+          employerPensionTotal: privEmployerPensionTotal,
+          monthlyPensionTotal: privMonthlyPensionTotal,
+          monthlyNet: privMonthlyNet,
+          bonusBase: privBonusBase,
+          yearEndBonus: privYearEndBonus,
+          appraisalMonths: privAppraisalMonths,
+          appraisalBonus: privAppraisalBonus,
+          festivalGifts: privFestivalGifts,
+          annualCashGross: privAnnualCashGross,
+          annualCashNet: privAnnualCashNet,
+          totalPackage: privTotalPackage
+        },
+        public: {
+          basePay: row.basePay,
+          academic: row.academic,
+          homeroom: pubHomeroom,
+          supervisory: pubSupervisory,
+          workBonus: pubWorkBonus,
+          overtimeMonthly: pubMonthlyOvertime,
+          overtimeAnnual: pubAnnualOvertime,
+          monthlyGross: pubMonthlyGross,
+          empPension: pubEmpPension,
+          empGessi: empGessiFee,
+          govPension: pubGovPension,
+          monthlyPensionTotal: pubMonthlyPensionTotal,
+          monthlyNet: pubMonthlyNet,
+          bonusBase: pubBonusBase,
+          yearEndBonus: pubYearEndBonus,
+          appraisalMonths: pubAppraisalMonths,
+          appraisalBonus: pubAppraisalBonus,
+          gradeLabel: pubGradeLabel,
+          annualCashGross: pubAnnualCashGross,
+          annualCashNet: pubAnnualCashNet,
+          totalPackage: pubTotalPackage
+        }
+      };
+    }
+
+    function calculate25YearTrajectory(baseParams, annualReturnRate) {
+      const monthlyRate = annualReturnRate / 12;
+      let privPensionBalance = 0;
+      let pubPensionBalance = 0;
+      let privTotalPrincipal = 0;
+      let pubTotalPrincipal = 0;
+
+      let privCumCashNet = 0;
+      let pubCumCashNet = 0;
+
+      let last10YearsBasePaySum = 0;
+      let year25BasePay = 0;
+
+      const schedule = [];
+
+      for (let yr = 1; yr <= 25; yr++) {
+        const res = calculateSingleYear({ ...baseParams, serviceYear: yr });
+
+        if (yr >= 16 && yr <= 25) {
+          last10YearsBasePaySum += res.row.basePay;
+        }
+        if (yr === 25) {
+          year25BasePay = res.row.basePay;
+        }
+
+        for (let m = 0; m < 12; m++) {
+          privPensionBalance = (privPensionBalance + res.private.monthlyPensionTotal) * (1 + monthlyRate);
+          pubPensionBalance = (pubPensionBalance + res.public.monthlyPensionTotal) * (1 + monthlyRate);
+        }
+
+        privTotalPrincipal += res.private.monthlyPensionTotal * 12;
+        pubTotalPrincipal += res.public.monthlyPensionTotal * 12;
+
+        privCumCashNet += res.private.annualCashNet;
+        pubCumCashNet += res.public.annualCashNet;
+
+        const privWealth = Math.round(privCumCashNet + privPensionBalance);
+        const pubWealth = Math.round(pubCumCashNet + pubPensionBalance);
+
+        schedule.push({
+          year: yr,
+          grade: res.row.grade,
+          point: res.row.point,
+          basePay: res.row.basePay,
+          privAnnualCashNet: res.private.annualCashNet,
+          pubAnnualCashNet: res.public.annualCashNet,
+          privCumCashNet: Math.round(privCumCashNet),
+          pubCumCashNet: Math.round(pubCumCashNet),
+          privPensionBalance: Math.round(privPensionBalance),
+          pubPensionBalance: Math.round(pubPensionBalance),
+          privTotalPrincipal: Math.round(privTotalPrincipal),
+          pubTotalPrincipal: Math.round(pubTotalPrincipal),
+          privWealth,
+          pubWealth,
+          wealthDiff: privWealth - pubWealth
+        });
+      }
+
+      const avgLast10BasePay = Math.round(last10YearsBasePaySum / 10);
+      const monthlyGessiAnnuity = Math.round(avgLast10BasePay * 25 * GESSI_ANNUITY_RATE);
+      const twentyYearGessiTotal = monthlyGessiAnnuity * 240;
+      const lumpSumGessiEquivalent = year25BasePay * 36;
+
+      return {
+        schedule,
+        gessi: {
+          avgLast10BasePay,
+          year25BasePay,
+          monthlyAnnuity: monthlyGessiAnnuity,
+          twentyYearTotal: twentyYearGessiTotal,
+          lumpSumEquivalent: lumpSumGessiEquivalent
+        }
+      };
+    }
+
+    function setState(key, value) {
+      if (key === 'privateAdminAllowance') {
+        state.adminAllowances[state.role] = value;
+      } else {
+        state[key] = value;
+      }
+      renderAll();
+    }
+
+    function setSchoolLevel(newLevel) {
+      state.schoolLevel = newLevel;
+      const maxP = OVERTIME_STANDARDS[newLevel].maxPeriods;
+      if (state.overtimePeriods > maxP) {
+        state.overtimePeriods = maxP;
+      }
+      renderAll();
+    }
+
+    function adjustOvertimePeriods(delta) {
+      const maxP = OVERTIME_STANDARDS[state.schoolLevel].maxPeriods;
+      const next = Math.max(0, Math.min(maxP, state.overtimePeriods + delta));
+      state.overtimePeriods = next;
+      renderAll();
+    }
+
+    function handleYearInput(val) {
+      let num = parseInt(val, 10);
+      if (isNaN(num)) return;
+      num = Math.max(1, Math.min(25, num));
+      state.serviceYear = num;
+      renderAll();
+    }
+
+    function handleAdminInput(val) {
+      let num = parseInt(val, 10);
+      if (isNaN(num)) return;
+      const range = PRIVATE_ADMIN_RANGES[state.role];
+      if (!range) return;
+      num = Math.max(range.min, Math.min(range.max, num));
+      state.adminAllowances[state.role] = num;
+      renderAll();
+    }
+
+    function handleCustomAllowance(field, val) {
+      let num = parseInt(val, 10);
+      if (isNaN(num) || num < 0) num = 0;
+      state[field] = num;
+      renderAll();
+    }
+
+    function switchTab(tabName) {
+      state.activeTab = tabName;
+      renderAll();
+    }
+
+    function resetDefaults() {
+      state = {
+        activeTab: state.activeTab,
+        degree: 'master',
+        serviceYear: 1,
+        schoolLevel: 'high',
+        overtimePeriods: 0,
+        role: 'homeroom',
+        hasGradeChair: false,
+        adminAllowances: {
+          deputyChief: 8500,
+          chief: 15500,
+          director: 25500
+        },
+        appraisal: 'excellent',
+        adjustmentAllowance: 0,
+        professionalAllowance: 0,
+        portfolio: 'balanced'
+      };
+      document.getElementById('adjustmentInput').value = 0;
+      document.getElementById('professionalInput').value = 0;
+      document.getElementById('gradeChairCheckbox').checked = false;
+      renderAll();
+    }
+
+    function updateOvertimeDropdown() {
+      const otConfig = OVERTIME_STANDARDS[state.schoolLevel];
+      const selectEl = document.getElementById('overtimeSelect');
+
+      let optionsHTML = `<option value="0" ${state.overtimePeriods === 0 ? 'selected' : ''}>0 節（無超鐘點）</option>`;
+      for (let i = 1; i <= otConfig.maxPeriods; i++) {
+        optionsHTML += `<option value="${i}" ${state.overtimePeriods === i ? 'selected' : ''}>每週 ${i} 節</option>`;
+      }
+      selectEl.innerHTML = optionsHTML;
+
+      // Show ONLY Private School overtime rate specification
+      document.getElementById('overtimeRateDesc').textContent = otConfig.privateDesc;
+
+      const privMonthlyOT = Math.round((state.overtimePeriods * otConfig.privateRate * ANNUAL_TEACHING_WEEKS) / 12);
+      const pubMonthlyOT  = Math.round((state.overtimePeriods * otConfig.publicRate * ANNUAL_TEACHING_WEEKS) / 12);
+
+      if (state.overtimePeriods === 0) {
+        document.getElementById('overtimeSummaryPreview').textContent =
+          `月均超鐘點（每週節數 × 超鐘點費 × 40週 ÷ 12個月）：$0`;
+      } else {
+        document.getElementById('overtimeSummaryPreview').textContent =
+          `月均超鐘點：本校 ${fmt(privMonthlyOT)} vs 公校 ${fmt(pubMonthlyOT)}（每週 ${state.overtimePeriods} 節 × 40週 ÷ 12個月）`;
+      }
+    }
+
+    function updateControlStyles() {
+      document.querySelectorAll('.degree-btn').forEach(btn => {
+        const active = btn.dataset.value === state.degree;
+        btn.className = active
+          ? 'degree-btn min-h-[48px] py-2 px-3 rounded-xl text-sm font-bold border-2 border-royal-600 bg-royal-600 text-white shadow-sm transition text-center cursor-pointer'
+          : 'degree-btn min-h-[48px] py-2 px-3 rounded-xl text-sm font-bold border border-slate-200 bg-white text-slate-700 hover:border-royal-300 transition text-center cursor-pointer';
+      });
+
+      document.getElementById('serviceYearSlider').value = state.serviceYear;
+      document.getElementById('serviceYearInput').value = state.serviceYear;
+
+      document.querySelectorAll('.level-btn').forEach(btn => {
+        const active = btn.dataset.value === state.schoolLevel;
+        btn.className = active
+          ? 'level-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border-2 border-tiffany-600 bg-tiffany-600 text-white shadow-sm transition text-center cursor-pointer'
+          : 'level-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border border-slate-200 bg-white text-slate-700 hover:border-tiffany-400 transition text-center cursor-pointer';
+      });
+
+      updateOvertimeDropdown();
+
+      document.querySelectorAll('.role-btn').forEach(btn => {
+        const active = btn.dataset.value === state.role;
+        const spanClass = btn.dataset.value === 'director' ? 'col-span-2 sm:col-span-2' : '';
+        btn.className = active
+          ? `role-btn min-h-[44px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border-2 border-royal-600 bg-royal-600 text-white shadow-sm transition cursor-pointer ${spanClass}`
+          : `role-btn min-h-[44px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border border-slate-200 bg-white text-slate-700 hover:border-royal-300 transition cursor-pointer ${spanClass}`;
+      });
+
+      const homeroomSub = document.getElementById('homeroomSubControl');
+      const adminSub = document.getElementById('adminSubControl');
+
+      if (state.role === 'homeroom') {
+        homeroomSub.classList.remove('hidden');
+        adminSub.classList.add('hidden');
+        document.getElementById('gradeChairCheckbox').checked = state.hasGradeChair;
+      } else if (['deputyChief', 'chief', 'director'].includes(state.role)) {
+        homeroomSub.classList.add('hidden');
+        adminSub.classList.remove('hidden');
+        const range = PRIVATE_ADMIN_RANGES[state.role];
+        const currentVal = state.adminAllowances[state.role];
+        const slider = document.getElementById('privateAdminSlider');
+        const input = document.getElementById('privateAdminInput');
+        slider.min = range.min;
+        slider.max = range.max;
+        slider.value = currentVal;
+        input.min = range.min;
+        input.max = range.max;
+        input.value = currentVal;
+        document.getElementById('adminRangeLabel').textContent = `本校「${range.label}」主管加給（參考本校管理辦法）`;
+        document.getElementById('adminMinText').textContent = `最低 ${fmt(range.min)}`;
+        document.getElementById('adminMidText').textContent = `預設中位數 ${fmt(range.defaultMid)}`;
+        document.getElementById('adminMaxText').textContent = `最高 ${fmt(range.max)}`;
+      } else {
+        homeroomSub.classList.add('hidden');
+        adminSub.classList.add('hidden');
+      }
+
+      document.querySelectorAll('.appraisal-btn').forEach(btn => {
+        const active = btn.dataset.value === state.appraisal;
+        btn.className = active
+          ? 'appraisal-btn min-h-[48px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border-2 border-royal-600 bg-royal-600 text-white shadow-sm transition text-center cursor-pointer'
+          : 'appraisal-btn min-h-[48px] py-2 px-2 rounded-xl text-xs sm:text-sm font-bold border border-slate-200 bg-white text-slate-700 hover:border-royal-300 transition text-center cursor-pointer';
+      });
+
+      document.querySelectorAll('.portfolio-btn').forEach(btn => {
+        const active = btn.dataset.value === state.portfolio;
+        btn.className = active
+          ? 'portfolio-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border-2 border-tiffany-600 bg-tiffany-600 text-white shadow-sm transition text-center cursor-pointer'
+          : 'portfolio-btn min-h-[48px] py-2 px-1.5 rounded-xl text-xs sm:text-sm font-bold border border-slate-200 bg-white text-slate-700 hover:border-tiffany-400 transition text-center cursor-pointer';
+      });
+
+      ['overview', 'career', 'matrix'].forEach(t => {
+        const btn = document.getElementById(`tabBtn-${t}`);
+        const content = document.getElementById(`tabContent-${t}`);
+        if (state.activeTab === t) {
+          btn.className = 'tab-btn min-h-[48px] py-3 px-4 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 bg-gradient-to-r from-royal-700 to-royal-600 text-white shadow-md cursor-pointer';
+          content.classList.remove('hidden');
+        } else {
+          btn.className = 'tab-btn min-h-[48px] py-3 px-4 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 bg-white/80 text-royal-800 hover:bg-royal-100/80 border border-royal-100 cursor-pointer';
+          content.classList.add('hidden');
+        }
+      });
+    }
+
+    function renderOverviewTab(singleRes) {
+      const p = singleRes.private;
+      const g = singleRes.public;
+      const ot = singleRes.overtime;
+
+      const capTag = singleRes.row.isSeniorCap ? '・已達年功俸封頂' : '';
+      document.getElementById('gradeStatusBadge').innerHTML = `
+        <span>目前對應：薪級 <strong class="text-royal-900">${singleRes.row.grade} 級</strong>（<strong class="text-royal-900">${singleRes.row.point} 薪點</strong>${capTag}）</span>
+        <span class="hidden sm:inline text-slate-300">|</span>
+        <span class="text-tiffany-800">本俸 ${fmt(singleRes.row.basePay)}</span>
+      `;
+      document.getElementById('publicGradeHint').textContent = `公校對應：${g.gradeLabel}`;
+
+      const monthlyNetDiff = p.monthlyNet - g.monthlyNet;
+      const annualCashDiff = p.annualCashGross - g.annualCashGross;
+      const monthlyPensionDiff = p.monthlyPensionTotal - g.monthlyPensionTotal;
+
+      const kpiHTML = `
+        <!-- Card 1: Monthly Net Cash -->
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-4 sm:p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">每月實領淨薪（扣退撫與公保）</span>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold shrink-0 ${monthlyNetDiff >= 0 ? 'bg-royal-100 text-royal-800' : 'bg-tiffany-100 text-tiffany-800'}">
+                ${fmtDiff(monthlyNetDiff)} /月
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <div class="bg-royal-50/70 rounded-xl p-3 border border-royal-100">
+                <span class="text-[11px] font-bold text-royal-700 block">林口康橋（私校）</span>
+                <span class="text-lg sm:text-2xl font-black text-royal-900">${fmt(p.monthlyNet)}</span>
+              </div>
+              <div class="bg-tiffany-50/70 rounded-xl p-3 border border-tiffany-100">
+                <span class="text-[11px] font-bold text-tiffany-700 block">公立學校</span>
+                <span class="text-lg sm:text-2xl font-black text-tiffany-900">${fmt(g.monthlyNet)}</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-3">
+            本校應發 ${fmt(p.monthlyGross)} － 退撫 ${fmt(p.empPension)} － 公保 ${fmt(p.empGessi)}
+          </p>
+        </div>
+
+        <!-- Card 2: Annual Total Gross Income -->
+        <div class="bg-white rounded-2xl shadow-md border-2 border-royal-200 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-royal-100/70 to-transparent rounded-bl-full pointer-events-none"></div>
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-bold text-royal-800 uppercase tracking-wider">全年總收入（含年終・考核・禮金）</span>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold shrink-0 ${annualCashDiff >= 0 ? 'bg-royal-600 text-white' : 'bg-tiffany-600 text-white'}">
+                ${fmtDiff(annualCashDiff)} /年
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <div class="bg-royal-50 rounded-xl p-3 border border-royal-200">
+                <span class="text-[11px] font-bold text-royal-700 block">林口康橋全年總額</span>
+                <span class="text-lg sm:text-2xl font-black text-royal-900">${fmt(p.annualCashGross)}</span>
+              </div>
+              <div class="bg-tiffany-50 rounded-xl p-3 border border-tiffany-200">
+                <span class="text-[11px] font-bold text-tiffany-700 block">公校全年總額</span>
+                <span class="text-lg sm:text-2xl font-black text-tiffany-900">${fmt(g.annualCashGross)}</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-3 font-medium">
+            本校年終 2 個月 + 考核 ${p.appraisalMonths} 個月 + 三節 $12,000${ot.periods > 0 ? ' + 超鐘點' : ''}
+          </p>
+        </div>
+
+        <!-- Card 3: Monthly Pension Deposit -->
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-4 sm:p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">每月退撫專戶總存入（個人+雇主）</span>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold shrink-0 ${monthlyPensionDiff >= 0 ? 'bg-royal-100 text-royal-800' : 'bg-tiffany-100 text-tiffany-800'}">
+                ${fmtDiff(monthlyPensionDiff)} /月
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <div class="bg-royal-50/70 rounded-xl p-3 border border-royal-100">
+                <span class="text-[11px] font-bold text-royal-700 block">私校新制 (12%)</span>
+                <span class="text-lg sm:text-2xl font-black text-royal-900">${fmt(p.monthlyPensionTotal)}</span>
+              </div>
+              <div class="bg-tiffany-50/70 rounded-xl p-3 border border-tiffany-100">
+                <span class="text-[11px] font-bold text-tiffany-700 block">公校新制 (15%)</span>
+                <span class="text-lg sm:text-2xl font-black text-tiffany-900">${fmt(g.monthlyPensionTotal)}</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-3">
+            雇主提撥：本校(校+政) ${fmt(p.employerPensionTotal)} vs 公校(政) ${fmt(g.govPension)}
+          </p>
+        </div>
+      `;
+      document.getElementById('overviewKpiCards').innerHTML = kpiHTML;
+
+      let otNote = '';
+      if (ot.periods > 0) {
+        otNote = `此外，每週超鐘點 ${ot.periods} 節（${ot.privateDesc}；公校 $${ot.publicRate}/節）之月均超鐘點（本校 ${fmt(ot.privMonthly)} vs 公校 ${fmt(ot.pubMonthly)}）已計入月薪與年薪，且依規定不計入獎金基數。`;
+      }
+
+      let insightMsg = '';
+      if (annualCashDiff >= 0) {
+        insightMsg = `在目前設定條件下，<strong>林口康橋全年總收入領先公立學校 ${fmt(annualCashDiff)}</strong>（平均每月多出 <strong>${fmt(Math.round(annualCashDiff / 12))}</strong>）。主要優勢來自於本校獎金計算基數（${fmt(p.bonusBase)}）涵蓋各項固定津貼，且考核與年終合計發放達 <strong>${2 + p.appraisalMonths} 個月</strong>；同時編制內專任教師亦享有與公校完全相同之<strong>公教人員保險養老年金</strong>保障。${otNote}`;
+      } else {
+        insightMsg = `在目前設定條件下，公立學校全年總收入高出本校 ${fmt(Math.abs(annualCashDiff))}；若將考核等第提升至「特優（2個月）」或兼任導師／行政主管，本校獎金基數將大幅放大年度總收入。${otNote}`;
+      }
+      document.getElementById('smartInsightBox').innerHTML = `
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-royal-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <div class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <div class="font-bold text-royal-900 mb-0.5">公私校薪資與保障比較摘要</div>
+            <p>${insightMsg}</p>
+          </div>
+        </div>
+      `;
+
+      const overtimeLabel = ot.periods > 0
+        ? `月均超鐘點費（每週 ${ot.periods} 節 × 鐘點費 × 40週 ÷ 12個月・不計入獎金基數）`
+        : `月均超鐘點費（目前 0 節・每週節數 × 鐘點費 × 40週 ÷ 12個月）`;
+
+      const rows = [
+        { section: '一、每月固定薪資、津貼、超鐘點與法定保險扣繳明細' },
+        { label: '本俸（薪額 ' + singleRes.row.point + ' 點・116年標準）', priv: p.basePay, pub: g.basePay },
+        { label: '學術研究加給（116年調薪標準・無折扣）', priv: p.academic, pub: g.academic },
+        { label: '導師職務加給（本校 $13,000 vs 公校 $4,000）', priv: p.homeroom, pub: g.homeroom },
+        { label: '兼任學年主任／領域召集人津貼', priv: p.gradeChair, pub: 0 },
+        { label: '主管職務加給（參考本校管理辦法 vs 公校 ≤70班）', priv: p.admin, pub: g.supervisory },
+        { label: '公校教師兼任行政工作獎金（115年新制）', priv: 0, pub: g.workBonus },
+        { label: '其他津貼（參考本校管理辦法薪級對照）', priv: p.other, pub: 0 },
+        { label: '績優津貼（參考本校管理辦法・第' + state.serviceYear + '年）', priv: p.merit, pub: 0 },
+        { label: '調整津貼 ＋ 專業津貼（自填項目）', priv: p.adjustment + p.professional, pub: 0 },
+        { label: overtimeLabel, priv: p.overtimeMonthly, pub: g.overtimeMonthly },
+        {
+          label: '每月應發薪資總額（含超鐘點・扣保險退撫前）',
+          priv: p.monthlyGross,
+          pub: g.monthlyGross,
+          highlight: 'subtotal'
+        },
+        {
+          label: '減：退撫新制個人自付提撥（35% 提撥）',
+          priv: -p.empPension,
+          pub: -g.empPension,
+          isDeduction: true
+        },
+        {
+          label: '減：公教人員保險自付保費（本俸 × 16.33% × 35%）',
+          priv: -p.empGessi,
+          pub: -g.empGessi,
+          isDeduction: true
+        },
+        {
+          label: '每月實領淨薪（扣除退撫與公保自付後實際入帳）',
+          priv: p.monthlyNet,
+          pub: g.monthlyNet,
+          highlight: 'net'
+        },
+
+        { section: '二、年度一次性獎金與禮金（超鐘點費不計入獎金基數）' },
+        { label: '獎金計算基數（1個月基準・不含超鐘點與績優津貼）', priv: p.bonusBase, pub: g.bonusBase, isInfo: true },
+        { label: `年終獎金（本校 2.0 個月 vs 公校 1.5 個月）`, priv: p.yearEndBonus, pub: g.yearEndBonus },
+        { label: `考核獎金（本校 ${p.appraisalMonths} 個月 vs 公校 ${g.appraisalMonths} 個月）`, priv: p.appraisalBonus, pub: g.appraisalBonus },
+        { label: '端午禮金 ($6,000) ＋ 中秋禮金 ($6,000)', priv: p.festivalGifts, pub: 0 },
+
+        { section: '三、年度總收入與退撫總包（Total Package）' },
+        {
+          label: '全年總收入（12個月應發含超鐘點 ＋ 年終 ＋ 考核 ＋ 禮金）',
+          priv: p.annualCashGross,
+          pub: g.annualCashGross,
+          highlight: 'grand'
+        },
+        {
+          label: '全年實領現金總額（扣除退撫與公保自付後）',
+          priv: p.annualCashNet,
+          pub: g.annualCashNet,
+          highlight: 'subtotal'
+        },
+        {
+          label: '加：全年雇主（學校＋政府）退休專戶提撥',
+          priv: p.employerPensionTotal * 12,
+          pub: g.govPension * 12
+        },
+        {
+          label: '全年完整薪酬總包（全年總收入 ＋ 雇主退休提撥）',
+          priv: p.totalPackage,
+          pub: g.totalPackage,
+          highlight: 'package'
+        }
+      ];
+
+      let tbodyHTML = '';
+      rows.forEach(r => {
+        if (r.section) {
+          tbodyHTML += `
+            <tr class="bg-slate-100/90">
+              <td colspan="4" class="py-2.5 px-3 sm:px-6 text-xs font-extrabold text-slate-600 uppercase tracking-wider">
+                ${r.section}
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        const diff = r.priv - r.pub;
+        let rowBg = 'hover:bg-slate-50/80';
+        let stickyBg = 'bg-white';
+        let labelClass = 'text-slate-700 font-medium';
+        let privClass = 'text-slate-800 font-semibold';
+        let pubClass = 'text-slate-800 font-semibold';
+
+        if (r.highlight === 'subtotal') {
+          rowBg = 'bg-slate-50/90 font-bold';
+          stickyBg = 'bg-slate-50';
+          labelClass = 'text-slate-900 font-bold';
+          privClass = 'text-royal-800 font-bold';
+          pubClass = 'text-tiffany-800 font-bold';
+        } else if (r.highlight === 'net') {
+          rowBg = 'bg-royal-50/40';
+          stickyBg = 'bg-royal-50/95';
+          labelClass = 'text-slate-900 font-extrabold';
+          privClass = 'text-royal-800 font-extrabold text-sm sm:text-base';
+          pubClass = 'text-tiffany-800 font-extrabold text-sm sm:text-base';
+        } else if (r.highlight === 'grand') {
+          rowBg = 'bg-gradient-to-r from-royal-50 via-white to-tiffany-50';
+          stickyBg = 'bg-royal-50';
+          labelClass = 'text-royal-950 font-black text-xs sm:text-base';
+          privClass = 'text-royal-700 font-black text-sm sm:text-lg';
+          pubClass = 'text-tiffany-700 font-black text-sm sm:text-lg';
+        } else if (r.highlight === 'package') {
+          rowBg = 'bg-slate-100/70';
+          stickyBg = 'bg-slate-100';
+          labelClass = 'text-slate-900 font-extrabold';
+          privClass = 'text-royal-800 font-extrabold';
+          pubClass = 'text-tiffany-800 font-extrabold';
+        } else if (r.isInfo) {
+          rowBg = 'bg-amber-50/40 italic';
+          stickyBg = 'bg-amber-50/95';
+          labelClass = 'text-slate-500 text-xs';
+          privClass = 'text-slate-500 text-xs';
+          pubClass = 'text-slate-500 text-xs';
+        } else if (r.isDeduction) {
+          labelClass = 'text-slate-600 text-xs sm:text-sm';
+          privClass = 'text-rose-700 font-medium';
+          pubClass = 'text-rose-700 font-medium';
+        }
+
+        const privText = r.priv < 0 ? `-${fmt(Math.abs(r.priv))}` : fmt(r.priv);
+        const pubText = r.pub < 0 ? `-${fmt(Math.abs(r.pub))}` : fmt(r.pub);
+        const diffBadgeClass = diff > 0
+          ? 'text-royal-700 bg-royal-100/80'
+          : (diff < 0 ? 'text-tiffany-800 bg-tiffany-100/80' : 'text-slate-400 bg-slate-100');
+
+        tbodyHTML += `
+          <tr class="${rowBg} transition">
+            <td class="py-3 px-3 sm:px-6 sticky left-0 z-10 ${stickyBg} shadow-[2px_0_5px_-2px_rgba(0,0,0,0.04)] ${labelClass}">${r.label}</td>
+            <td class="py-3 px-3 sm:px-6 text-right ${privClass}">${privText}</td>
+            <td class="py-3 px-3 sm:px-6 text-right ${pubClass}">${pubText}</td>
+            <td class="py-3 px-3 sm:px-6 text-right">
+              <span class="inline-block px-2 py-0.5 rounded-md text-xs font-bold ${diffBadgeClass}">
+                ${fmtDiff(diff)}
+              </span>
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('overviewTableBody').innerHTML = tbodyHTML;
+    }
+
+    function renderCareerTab(baseParams) {
+      const portfolioInfo = PORTFOLIO_RATES[state.portfolio];
+      const { schedule, gessi } = calculate25YearTrajectory(baseParams, portfolioInfo.rate);
+      const yr25 = schedule[24];
+
+      const cashDiff25 = yr25.privCumCashNet - yr25.pubCumCashNet;
+      const pensionDiff25 = yr25.privPensionBalance - yr25.pubPensionBalance;
+      const wealthDiff25 = yr25.wealthDiff;
+
+      document.getElementById('careerKpiCards').innerHTML = `
+        <!-- Card 1 -->
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-4 sm:p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-xs font-bold text-slate-500 uppercase">25年累積實領薪資總額</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold shrink-0 ${cashDiff25 >= 0 ? 'bg-royal-100 text-royal-800' : 'bg-tiffany-100 text-tiffany-800'}">
+              ${fmtDiff(cashDiff25)}
+            </span>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between items-baseline bg-royal-50/70 px-3 py-2 rounded-xl">
+              <span class="text-xs font-bold text-royal-700">林口康橋累積實領</span>
+              <span class="text-base sm:text-lg font-black text-royal-900">${fmt(yr25.privCumCashNet)}</span>
+            </div>
+            <div class="flex justify-between items-baseline bg-tiffany-50/70 px-3 py-2 rounded-xl">
+              <span class="text-xs font-bold text-tiffany-700">公校累積實領</span>
+              <span class="text-base sm:text-lg font-black text-tiffany-900">${fmt(yr25.pubCumCashNet)}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-4 sm:p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-xs font-bold text-slate-500 uppercase">第25年末退撫專戶餘額（${portfolioInfo.label}）</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold shrink-0 ${pensionDiff25 >= 0 ? 'bg-royal-100 text-royal-800' : 'bg-tiffany-100 text-tiffany-800'}">
+              ${fmtDiff(pensionDiff25)}
+            </span>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between items-baseline bg-royal-50/70 px-3 py-2 rounded-xl">
+              <span class="text-xs font-bold text-royal-700">林口康橋退撫專戶 (12%)</span>
+              <span class="text-base sm:text-lg font-black text-royal-900">${fmt(yr25.privPensionBalance)}</span>
+            </div>
+            <div class="flex justify-between items-baseline bg-tiffany-50/70 px-3 py-2 rounded-xl">
+              <span class="text-xs font-bold text-tiffany-700">公校退撫專戶 (15%)</span>
+              <span class="text-base sm:text-lg font-black text-tiffany-900">${fmt(yr25.pubPensionBalance)}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white rounded-2xl shadow-md border-2 border-royal-300 p-4 sm:p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-xs font-bold text-royal-800 uppercase">25年職涯總資產（實領薪資＋退撫專戶）</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold shrink-0 ${wealthDiff25 >= 0 ? 'bg-royal-600 text-white' : 'bg-tiffany-600 text-white'}">
+              ${fmtDiff(wealthDiff25)}
+            </span>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between items-baseline bg-royal-50 px-3 py-2 rounded-xl border border-royal-200">
+              <span class="text-xs font-bold text-royal-800">林口康橋25年總資產</span>
+              <span class="text-base sm:text-xl font-black text-royal-900">${fmt(yr25.privWealth)}</span>
+            </div>
+            <div class="flex justify-between items-baseline bg-tiffany-50 px-3 py-2 rounded-xl border border-tiffany-200">
+              <span class="text-xs font-bold text-tiffany-800">公校25年總資產</span>
+              <span class="text-base sm:text-xl font-black text-tiffany-900">${fmt(yr25.pubWealth)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const degreeText = state.degree === 'bachelor' ? '學士（190起～625封頂）' : '碩士以上（245起～650封頂）';
+      const otText = state.overtimePeriods > 0 ? ` ｜ 每週超鐘點 ${state.overtimePeriods} 節` : '';
+      document.getElementById('careerChartSubtitle').textContent =
+        `模擬條件：${degreeText}${otText} ｜ 投資組合：${portfolioInfo.label}（年化 ${(portfolioInfo.rate * 100).toFixed(1)}%）｜ 25年無留停每年晉1級`;
+
+      const ctx = document.getElementById('careerChart').getContext('2d');
+      if (careerChartInstance) {
+        careerChartInstance.destroy();
+      }
+
+      careerChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: schedule.map(s => `第${s.year}年`),
+          datasets: [
+            {
+              label: '林口康橋累積總資產（實領薪資＋退撫專戶）',
+              data: schedule.map(s => s.privWealth),
+              borderColor: '#6C3483',
+              backgroundColor: 'rgba(108, 52, 131, 0.08)',
+              borderWidth: 3,
+              pointRadius: 2.5,
+              pointHoverRadius: 6,
+              tension: 0.25,
+              fill: false
+            },
+            {
+              label: '公校累積總資產（實領薪資＋退撫專戶）',
+              data: schedule.map(s => s.pubWealth),
+              borderColor: '#0ABAB5',
+              backgroundColor: 'rgba(10, 186, 181, 0.08)',
+              borderWidth: 3,
+              pointRadius: 2.5,
+              pointHoverRadius: 6,
+              tension: 0.25,
+              fill: false
+            },
+            {
+              label: '林口康橋退撫個人專戶餘額',
+              data: schedule.map(s => s.privPensionBalance),
+              borderColor: '#9B59B6',
+              borderDash: [6, 4],
+              borderWidth: 2,
+              pointRadius: 0,
+              pointHoverRadius: 5,
+              tension: 0.25,
+              fill: false
+            },
+            {
+              label: '公校退撫個人專戶餘額',
+              data: schedule.map(s => s.pubPensionBalance),
+              borderColor: '#00837E',
+              borderDash: [6, 4],
+              borderWidth: 2,
+              pointRadius: 0,
+              pointHoverRadius: 5,
+              tension: 0.25,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(30, 41, 59, 0.95)',
+              padding: 12,
+              titleFont: { size: 13, weight: 'bold' },
+              bodyFont: { size: 12 },
+              callbacks: {
+                label: function(context) {
+                  return `${context.dataset.label}: $${context.parsed.y.toLocaleString('zh-TW')}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                maxTicksLimit: 13,
+                font: { size: 11 }
+              }
+            },
+            y: {
+              grid: { color: '#F1F5F9' },
+              ticks: {
+                font: { size: 11 },
+                callback: function(value) {
+                  return (value / 10000).toLocaleString('zh-TW') + ' 萬';
+                }
+              }
+            }
+          }
+        }
+      });
+
+      const privInterest = yr25.privPensionBalance - yr25.privTotalPrincipal;
+      const pubInterest = yr25.pubPensionBalance - yr25.pubTotalPrincipal;
+
+      document.getElementById('pensionBreakdownCard').innerHTML = `
+        <!-- TIER 1: 退撫新制個人專戶 -->
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-md bg-royal-700 text-white text-xs font-extrabold">第一層保障</span>
+              退撫新制個人專戶（25 年本金與複利累積拆解）
+            </h3>
+            <span class="text-xs text-slate-500">投資組合：${portfolioInfo.label}（年化 ${(portfolioInfo.rate * 100).toFixed(1)}%）</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-royal-50/70 rounded-xl p-4 border border-royal-200">
+              <div class="flex flex-wrap justify-between items-center gap-1 mb-2.5">
+                <span class="font-bold text-royal-900">林口康橋（私校退撫新制 12%）</span>
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded bg-royal-200 text-royal-900">專戶總額 ${fmt(yr25.privPensionBalance)}</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5 text-xs">
+                <div class="bg-white p-2.5 rounded-lg border border-royal-100">
+                  <span class="text-slate-500 block">25年累計提撥本金</span>
+                  <span class="font-bold text-slate-800 text-sm">${fmt(yr25.privTotalPrincipal)}</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-lg border border-royal-100">
+                  <span class="text-slate-500 block">25年複利投資收益</span>
+                  <span class="font-bold text-royal-700 text-sm">+${fmt(privInterest)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-tiffany-50/70 rounded-xl p-4 border border-tiffany-200">
+              <div class="flex flex-wrap justify-between items-center gap-1 mb-2.5">
+                <span class="font-bold text-tiffany-900">公立學校（公校退撫新制 15%）</span>
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded bg-tiffany-200 text-tiffany-900">專戶總額 ${fmt(yr25.pubPensionBalance)}</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5 text-xs">
+                <div class="bg-white p-2.5 rounded-lg border border-tiffany-100">
+                  <span class="text-slate-500 block">25年累計提撥本金</span>
+                  <span class="font-bold text-slate-800 text-sm">${fmt(yr25.pubTotalPrincipal)}</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-lg border border-tiffany-100">
+                  <span class="text-slate-500 block">25年複利投資收益</span>
+                  <span class="font-bold text-tiffany-700 text-sm">+${fmt(pubInterest)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIER 2: 公教人員保險養老年金 -->
+        <div class="pt-5 border-t border-slate-200">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-md bg-tiffany-600 text-white text-xs font-extrabold">第二層保障</span>
+              公教人員保險養老年金（終身按月領取・公私校同享）
+            </h3>
+            <span class="text-xs font-bold text-tiffany-800 bg-tiffany-50 px-2.5 py-1 rounded-lg border border-tiffany-200">
+              公私校編制內專任教師保障完全相同
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gradient-to-br from-royal-50/80 to-white rounded-xl p-4 border border-royal-200">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="font-bold text-royal-900 text-sm">林口康橋專任教師（公保年金）</span>
+                <span class="text-[11px] font-semibold text-royal-700 bg-royal-100 px-2 py-0.5 rounded">給付率 1.3% × 25年</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-xs">
+                <div class="bg-white p-2.5 rounded-lg border border-royal-100">
+                  <span class="text-slate-500 block text-[11px]">退保前10年均俸</span>
+                  <span class="font-bold text-slate-800 text-sm">${fmt(gessi.avgLast10BasePay)}</span>
+                </div>
+                <div class="bg-royal-600 text-white p-2.5 rounded-lg shadow-sm">
+                  <span class="text-royal-100 block text-[11px]">每月終身領取</span>
+                  <span class="font-black text-sm sm:text-base">${fmt(gessi.monthlyAnnuity)}</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-lg border border-royal-100">
+                  <span class="text-slate-500 block text-[11px]">領滿20年累積</span>
+                  <span class="font-bold text-royal-800 text-sm">${fmt(gessi.twentyYearTotal)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-tiffany-50/80 to-white rounded-xl p-4 border border-tiffany-200">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="font-bold text-tiffany-900 text-sm">公立學校專任教師（公保年金）</span>
+                <span class="text-[11px] font-semibold text-tiffany-800 bg-tiffany-100 px-2 py-0.5 rounded">給付率 1.3% × 25年</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-xs">
+                <div class="bg-white p-2.5 rounded-lg border border-tiffany-100">
+                  <span class="text-slate-500 block text-[11px]">退保前10年均俸</span>
+                  <span class="font-bold text-slate-800 text-sm">${fmt(gessi.avgLast10BasePay)}</span>
+                </div>
+                <div class="bg-tiffany-600 text-white p-2.5 rounded-lg shadow-sm">
+                  <span class="text-tiffany-100 block text-[11px]">每月終身領取</span>
+                  <span class="font-black text-sm sm:text-base">${fmt(gessi.monthlyAnnuity)}</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-lg border border-tiffany-100">
+                  <span class="text-slate-500 block text-[11px]">領滿20年累積</span>
+                  <span class="font-bold text-tiffany-800 text-sm">${fmt(gessi.twentyYearTotal)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 bg-slate-50 rounded-xl p-3 border border-slate-200/80 text-xs text-slate-600 space-y-1 leading-relaxed">
+            <p><strong>・法定請領條件：</strong>繳付公保費滿 20 年以上且年滿 60 歲（或滿 15 年且年滿 65 歲、滿 30 年且年滿 55 歲），即可全額按月終身領取養老年金；未達年齡者亦可選擇展延至屆齡請領，或每提前 1 年減給 4% 領取減額年金。</p>
+            <p><strong>・一次養老給付對照：</strong>依現行法規滿 15 年以上符合請領條件者原則採按月領取；若屬不符年金條件而改採一次請領（滿 20 年以上最高 36 個月基數），一次給付金額為 <strong>${fmt(gessi.lumpSumEquivalent)}</strong>（第 25 年本俸 ${fmt(gessi.year25BasePay)} × 36 個月）。</p>
+          </div>
+        </div>
+      `;
+
+      let schedHTML = '';
+      schedule.forEach(s => {
+        const diffClass = s.wealthDiff >= 0 ? 'text-royal-700 font-bold' : 'text-tiffany-700 font-bold';
+        schedHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="py-2.5 px-3 text-center font-bold text-slate-700 bg-white sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.04)]">第 ${s.year} 年</td>
+            <td class="py-2.5 px-3 text-center text-slate-600">${s.grade} 級 / ${s.point} 點</td>
+            <td class="py-2.5 px-3 font-semibold text-royal-800">${fmt(s.privAnnualCashNet)}</td>
+            <td class="py-2.5 px-3 font-semibold text-tiffany-800">${fmt(s.pubAnnualCashNet)}</td>
+            <td class="py-2.5 px-3 bg-royal-50/30 text-royal-900 font-medium">${fmt(s.privPensionBalance)}</td>
+            <td class="py-2.5 px-3 bg-tiffany-50/30 text-tiffany-900 font-medium">${fmt(s.pubPensionBalance)}</td>
+            <td class="py-2.5 px-3 ${diffClass}">${fmtDiff(s.wealthDiff)}</td>
+          </tr>
+        `;
+      });
+      document.getElementById('careerScheduleBody').innerHTML = schedHTML;
+    }
+
+    function renderMatrixTab(baseParams) {
+      const roles = ['teacher', 'homeroom', 'deputyChief', 'chief', 'director'];
+      const portfolioInfo = PORTFOLIO_RATES[state.portfolio];
+
+      const degreeLabel = state.degree === 'bachelor' ? '學士' : '碩士以上';
+      const levelLabel = { high: '高中', junior: '國中', elementary: '國小' }[state.schoolLevel];
+      const appLabel = { excellent: '特優', good: '優', fair: '佳', acceptable: '尚可' }[state.appraisal];
+      const otLabel = state.overtimePeriods > 0 ? ` ｜ 超鐘點 ${state.overtimePeriods} 節/週` : '';
+
+      document.getElementById('matrixSubtitle').textContent =
+        `固定條件：${degreeLabel} ｜ 第 ${state.serviceYear} 年 ｜ ${levelLabel}${otLabel} ｜ 考核「${appLabel}」｜ 退撫${portfolioInfo.label}`;
+
+      document.getElementById('matrixChairTag').textContent =
+        state.hasGradeChair ? '含學年/領域 +$3,000' : '未兼學年/領域';
+
+      const matrixData = roles.map(r => {
+        const roleParams = {
+          ...baseParams,
+          role: r,
+          adminAllowanceValue: state.adminAllowances[r] || 0
+        };
+        const single = calculateSingleYear(roleParams);
+        const traj25 = calculate25YearTrajectory(roleParams, portfolioInfo.rate);
+        return {
+          role: r,
+          single,
+          yr25: traj25.schedule[24]
+        };
+      });
+
+      const matrixRows = [
+        {
+          title: '林口康橋（私校）每月應發薪資',
+          isPriv: true,
+          getValue: d => fmt(d.single.private.monthlyGross)
+        },
+        {
+          title: '公立學校每月應發薪資',
+          isPub: true,
+          getValue: d => fmt(d.single.public.monthlyGross)
+        },
+        {
+          title: '每月應發薪資差額（私 － 公）',
+          isDiff: true,
+          getRawDiff: d => d.single.private.monthlyGross - d.single.public.monthlyGross
+        },
+        {
+          title: '林口康橋（私校）全年總收入（含獎金禮金）',
+          isPrivBold: true,
+          getValue: d => fmt(d.single.private.annualCashGross)
+        },
+        {
+          title: '公立學校全年總收入（含年終考績）',
+          isPubBold: true,
+          getValue: d => fmt(d.single.public.annualCashGross)
+        },
+        {
+          title: '全年總收入差額（私 － 公）',
+          isDiffHighlight: true,
+          getRawDiff: d => d.single.private.annualCashGross - d.single.public.annualCashGross
+        },
+        {
+          title: '第25年末本校退撫專戶累積預估',
+          isPriv: true,
+          getValue: d => fmt(d.yr25.privPensionBalance)
+        },
+        {
+          title: '第25年末公校退撫專戶累積預估',
+          isPub: true,
+          getValue: d => fmt(d.yr25.pubPensionBalance)
+        },
+        {
+          title: '25年職涯總資產差額（實領＋退撫專戶）',
+          isDiffHighlight: true,
+          getRawDiff: d => d.yr25.wealthDiff
+        }
+      ];
+
+      let html = '';
+      matrixRows.forEach(row => {
+        let trClass = 'hover:bg-slate-50/80';
+        let stickyBg = 'bg-white';
+        if (row.isDiffHighlight) {
+          trClass = 'bg-slate-50 font-bold';
+          stickyBg = 'bg-slate-50';
+        }
+
+        html += `<tr class="${trClass}">`;
+        html += `<td class="py-3.5 px-3 sm:px-4 font-bold text-slate-700 text-xs sm:text-sm sticky left-0 z-10 ${stickyBg} shadow-[2px_0_5px_-2px_rgba(0,0,0,0.04)]">${row.title}</td>`;
+
+        matrixData.forEach((d, idx) => {
+          const colHighlight = idx === 1 ? 'bg-royal-50/30' : '';
+          if (row.isDiff || row.isDiffHighlight) {
+            const diff = row.getRawDiff(d);
+            const badgeClass = diff >= 0
+              ? 'bg-royal-100 text-royal-800'
+              : 'bg-tiffany-100 text-tiffany-800';
+            html += `
+              <td class="py-3.5 px-3 sm:px-4 text-right ${colHighlight}">
+                <span class="inline-block px-2.5 py-1 rounded-lg text-xs font-extrabold ${badgeClass}">
+                  ${fmtDiff(diff)}
+                </span>
+              </td>
+            `;
+          } else {
+            let textClass = 'text-slate-800 font-semibold';
+            if (row.isPriv) textClass = 'text-royal-800 font-semibold';
+            if (row.isPub) textClass = 'text-tiffany-800 font-semibold';
+            if (row.isPrivBold) textClass = 'text-royal-900 font-black text-sm sm:text-base';
+            if (row.isPubBold) textClass = 'text-tiffany-900 font-black text-sm sm:text-base';
+
+            html += `<td class="py-3.5 px-3 sm:px-4 text-right ${colHighlight} ${textClass}">${row.getValue(d)}</td>`;
+          }
+        });
+
+        html += `</tr>`;
+      });
+
+      document.getElementById('matrixTableBody').innerHTML = html;
+    }
+
+    function renderAll() {
+      updateControlStyles();
+
+      const currentParams = {
+        degree: state.degree,
+        serviceYear: state.serviceYear,
+        schoolLevel: state.schoolLevel,
+        overtimePeriods: state.overtimePeriods,
+        role: state.role,
+        hasGradeChair: state.hasGradeChair,
+        adminAllowanceValue: state.adminAllowances[state.role] || 0,
+        appraisal: state.appraisal,
+        adjustmentAllowance: state.adjustmentAllowance,
+        professionalAllowance: state.professionalAllowance
+      };
+
+      const singleRes = calculateSingleYear(currentParams);
+
+      renderOverviewTab(singleRes);
+      if (state.activeTab === 'career') {
+        renderCareerTab(currentParams);
+      } else if (state.activeTab === 'matrix') {
+        renderMatrixTab(currentParams);
+      }
+    }
+
+    window.onload = function() {
+      renderAll();
+    };
+  </script>
+</body>
+</html>
