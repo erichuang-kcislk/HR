@@ -669,28 +669,36 @@
       director:    { label: '正副主任', min: 18000, max: 33000, defaultMid: 25500 }
     };
 
-    // Public School Admin Supervisory Allowance (116-year adjusted, <= 70 classes) + Admin Work Bonus
+    // Public School Admin Supervisory Allowance (116-year adjusted: (original + 2000) * 1.04) + Admin Work Bonus (Tier 3: 1000)
+    // Original supervisory allowance by point: >=290 -> 5930 (8247), 245-275 -> 4870 (7145), <=230 -> 4320 (6573)
+    function getPublicSupervisoryAllowance(point, role) {
+      if (role !== 'chief' && role !== 'director') return 0;
+      if (point >= 290) return 8247;
+      if (point >= 245) return 7145;
+      return 6573;
+    }
+
     const PUBLIC_ADMIN_STANDARDS = {
       high: {
-        teacher:     { supervisory: 0,     workBonus: 0,    homeroom: 0 },
-        homeroom:    { supervisory: 0,     workBonus: 0,    homeroom: 4000 },
-        deputyChief: { supervisory: 0,     workBonus: 0,    homeroom: 0 },
-        chief:       { supervisory: 7350,  workBonus: 1500, homeroom: 0 },
-        director:    { supervisory: 10150, workBonus: 2000, homeroom: 0 }
+        teacher:     { workBonus: 0,    homeroom: 0 },
+        homeroom:    { workBonus: 0,    homeroom: 4000 },
+        deputyChief: { workBonus: 0,    homeroom: 0 },
+        chief:       { workBonus: 1000, homeroom: 0 },
+        director:    { workBonus: 1000, homeroom: 0 }
       },
       junior: {
-        teacher:     { supervisory: 0,     workBonus: 0,    homeroom: 0 },
-        homeroom:    { supervisory: 0,     workBonus: 0,    homeroom: 4000 },
-        deputyChief: { supervisory: 0,     workBonus: 0,    homeroom: 0 },
-        chief:       { supervisory: 6720,  workBonus: 1500, homeroom: 0 },
-        director:    { supervisory: 8950,  workBonus: 2000, homeroom: 0 }
+        teacher:     { workBonus: 0,    homeroom: 0 },
+        homeroom:    { workBonus: 0,    homeroom: 4000 },
+        deputyChief: { workBonus: 0,    homeroom: 0 },
+        chief:       { workBonus: 1000, homeroom: 0 },
+        director:    { workBonus: 1000, homeroom: 0 }
       },
       elementary: {
-        teacher:     { supervisory: 0,     workBonus: 0,    homeroom: 0 },
-        homeroom:    { supervisory: 0,     workBonus: 0,    homeroom: 4000 },
-        deputyChief: { supervisory: 0,     workBonus: 0,    homeroom: 0 },
-        chief:       { supervisory: 6720,  workBonus: 1500, homeroom: 0 },
-        director:    { supervisory: 8450,  workBonus: 2000, homeroom: 0 }
+        teacher:     { workBonus: 0,    homeroom: 0 },
+        homeroom:    { workBonus: 0,    homeroom: 4000 },
+        deputyChief: { workBonus: 0,    homeroom: 0 },
+        chief:       { workBonus: 1000, homeroom: 0 },
+        director:    { workBonus: 1000, homeroom: 0 }
       }
     };
 
@@ -874,7 +882,7 @@
       // --- PUBLIC SCHOOL CALCULATION (116-YEAR BENCHMARK) ---
       const pubRoleConfig = PUBLIC_ADMIN_STANDARDS[schoolLevel][role];
       const pubHomeroom = pubRoleConfig.homeroom;
-      const pubSupervisory = pubRoleConfig.supervisory;
+      const pubSupervisory = getPublicSupervisoryAllowance(row.point, role);
       const pubWorkBonus = pubRoleConfig.workBonus;
 
       // Monthly Gross INCLUDES Monthly Average Overtime
@@ -1369,8 +1377,8 @@
         { label: '學術研究加給（116年調薪標準・無折扣）', priv: p.academic, pub: g.academic },
         { label: '導師職務加給（本校 $13,000 vs 公校 $4,000）', priv: p.homeroom, pub: g.homeroom },
         { label: '兼任學年主任／領域召集人津貼', priv: p.gradeChair, pub: 0 },
-        { label: '主管職務加給（參考本校管理辦法 vs 公校 ≤70班）', priv: p.admin, pub: g.supervisory },
-        { label: '公校教師兼任行政工作獎金（115年新制）', priv: 0, pub: g.workBonus },
+        { label: '主管職務加給（參考本校管理辦法 vs 公校依薪點標準）', priv: p.admin, pub: g.supervisory },
+        { label: '公校教師兼任行政工作獎金（第三級標準）', priv: 0, pub: g.workBonus },
         { label: '其他津貼（參考本校管理辦法薪級對照）', priv: p.other, pub: 0 },
         { label: '績優津貼（參考本校管理辦法・第' + state.serviceYear + '年）', priv: p.merit, pub: 0 },
         { label: '調整津貼 ＋ 專業津貼（自填項目）', priv: p.adjustment + p.professional, pub: 0 },
